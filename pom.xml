@@ -162,6 +162,8 @@
         <module>interceptor-fangshua</module>
         <!-- 阳哥第三季 -->
         <module>season3</module>
+        <!-- 咕泡并发 -->
+        <module>gupao-concurrent</module>
     </modules>
 
 
