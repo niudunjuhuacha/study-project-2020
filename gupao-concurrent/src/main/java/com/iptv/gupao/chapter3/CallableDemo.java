@@ -24,6 +24,9 @@ public class CallableDemo implements Callable<String> {
         String s = submit.get();
         System.out.println("s = " + s);
 
+        // 关闭线程池
+        executorService.shutdown();
+
     }
 
     @Override
