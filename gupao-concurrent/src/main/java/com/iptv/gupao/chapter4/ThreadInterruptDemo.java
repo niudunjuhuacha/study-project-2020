@@ -19,6 +19,12 @@ public class ThreadInterruptDemo {
                     // 复位
                     Thread.interrupted();
                     // 复位后重新获取当前线程是否被中断
+                    try {
+                        System.out.println("开始睡2s");
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("after:" + Thread.currentThread().isInterrupted());
                 }
             }
