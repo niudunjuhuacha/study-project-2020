@@ -1,4 +1,4 @@
-package com.iptv.gupao.chapter3;
+package com.iptv.gupao.basics.chapter3;
 
 import java.util.concurrent.*;
 

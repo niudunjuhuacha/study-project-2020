@@ -1,4 +1,4 @@
-package com.iptv.gupao.chapter4;
+package com.iptv.gupao.basics.chapter4;
 
 /**
  * @author liuqi
