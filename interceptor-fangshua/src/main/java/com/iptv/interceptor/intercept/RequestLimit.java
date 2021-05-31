@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 /**
  * 请求限制的自定义注解
  *
+ * @author liuqi
  * @Target 注解可修饰的对象范围，ElementType.METHOD 作用于方法，ElementType.TYPE 作用于类
  * (ElementType)取值有：
  * 　　　　1.CONSTRUCTOR:用于描述构造器
