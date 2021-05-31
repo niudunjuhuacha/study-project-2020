@@ -28,7 +28,7 @@ public class LoginHandlerFactory implements InitializingBean, ApplicationContext
 
 
     public LoginHandler<Serializable> getHandler(LoginType loginType){
-        return null;
+        return LOGIN_HANDLER_MAP.get(loginType);
     }
 
     @Override

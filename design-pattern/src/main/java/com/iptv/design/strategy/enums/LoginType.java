@@ -9,6 +9,6 @@ public enum LoginType {
 
     QQ,
     WE_CHAT,
-    WEIBO;
+    WEIBO
 
 }
