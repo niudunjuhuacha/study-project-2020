@@ -4,6 +4,7 @@ import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import com.iptv.season3.facetalk.HttpUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,7 +21,7 @@ import java.util.Map;
 public class DouyinHttpRequest {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String url = "https://www.douyin.com/aweme/v1/web/search/item/?device_platform=webapp&aid=6383&channel=channel_pc_web&search_channel=aweme_video_web&search_source=pc_detail_load_more&sort_type=0&publish_time=0&is_filter_search=0&query_correct_type=1&keyword=%E7%BE%8E%E5%A5%B3%E8%A7%86%E9%A2%91%E8%B7%B3%E8%88%9E%E5%90%88%E9%9B%86&search_id=202110081657080102120570761D0C3D6E&offset=33&count=30&version_code=170400&version_name=17.4.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Mozilla&browser_version=5.0+(Windows+NT+10.0%3B+Win64%3B+x64)+AppleWebKit%2F537.36+(KHTML,+like+Gecko)+Chrome%2F94.0.4606.61+Safari%2F537.36&browser_online=true&msToken=MnlpHoVy2gqUGdMi8Jc60x1nTllZLKAdqD3-9Hnn8ctVusMbgPN0oZzIZfskkksKDSktrpck_jZSkSN9QIZ1TLWtHb5vl37LSdci7u_Dgskm0xBQvmQdaXqd5Q==&X-Bogus=DFSzsdVODrvANcK8Sz3pqF9WX7rx&_signature=_02B4Z6wo00001AvMt-AAAIDAi85NoY0zJEgLyLNAAGOZZ6zucyXBDeiY5xKJrS9BhDalkeqM-w446bK2fFMz5toCcvfDtPPJpCiLUVbnx.Cq6OMf6X7rH0XaM6BdY2.-oHMD.9VxywX0slni85";
         Map header = new HashMap();
         header.put("Host", "<calculated when request is sent>");
@@ -39,10 +40,12 @@ public class DouyinHttpRequest {
         header.put("sec-fetch-site", "same-origin");
 //        header.put("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36");
         header.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36");
-        HttpResponse execute = HttpRequest.get(url).addHeaders(header).execute();
+//        HttpResponse execute = HttpRequest.get(url).addHeaders(header).execute();
+
+        String s = HttpUtils.doGet(url, null, header, null);
 
 
-        System.out.println(execute);
+        System.out.println(s);
 
     }
 
