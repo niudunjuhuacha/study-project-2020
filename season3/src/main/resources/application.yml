@@ -1,0 +1,58 @@
+server:
+  port: 16677
+  tomcat:
+    max-threads: 300
+    max-connections: 30000
+spring:
+  #consul配置中心设置
+  cloud:
+    consul:
+      host: 192.168.125.125
+      port: 8500
+      enabled: true
+      discovery:
+        enabled: true
+        serviceName: interceptor-fangshua
+        port: ${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        tags: interceptor-fangshua
+        prefer-ip-address: true
+    inetutils:
+      ignored-interfaces: #忽略VmWare虚拟网卡干扰
+        - VMware.*
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  profiles:
+    active: data
+  application:
+    name: interceptor-fangshua
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+    host: 192.168.125.125
+    password: 1qaz2wsx@CJY
+    port: 6379
+    lettuce:
+      pool:
+        #最大等待时间
+        max-wait: 1000ms
+        #最大连接数
+        max-active: 20
+        #最大空闲数量
+        max-idle: 20
+        #最小空闲数
+        min-idle: 1
+      shutdown-timeout: 100ms
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

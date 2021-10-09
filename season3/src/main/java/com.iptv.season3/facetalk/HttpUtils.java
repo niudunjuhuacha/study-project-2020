@@ -3,7 +3,7 @@
  */
 package com.iptv.season3.facetalk;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
