@@ -22,11 +22,14 @@ public class DouyinHttp {
     final static String FILE_NAME = "d:/data/douyinData/test001/douyinJson.txt";
 
     // todo 名字序号
-    final static Integer FILE_NAME_INDEX = 0;
+    final static Integer FILE_NAME_INDEX = 85;
 
 
+    /**
+     * 推荐的作品
+     */
     @Test
-    // 读取文件的json，然后解析到 其中的视频地址，直接下周
+    // 读取文件的json，然后解析到 其中的视频地址，直接下载
     public void douyinHttp() {
         // 读取本地文件夹下的json文件，返回视频地址List<String>
         Map<String, String> videoMap = getVideoMap();
@@ -34,13 +37,68 @@ public class DouyinHttp {
             String filePath = "d:/data/douyinData/test001/" + DateUtil.today() + "/" + id + ".mp4";
             httpDownload(url, filePath);
         });
-/*        String videoUrl = "http://v3-z.douyinvod.com/3bfa066ce4ee6ff265cf41e8578d20ac/61611fec/video/tos/cn/tos-cn-ve-15/f8618738867048888d435362425dac05/?a=1128&br=1126&bt=1126&btag=3&cd=0%7C0%7C0&ch=0&cr=0&cs=0&cv=1&dr=0&ds=3&er=&ft=OR_LrKZZI0rE1lhzWTh94ictRsWd.oGfc68&l=&lr=&mime_type=video_mp4&net=0&pl=0&qs=0&rc=ajVxNTU6Zm9yNjMzNGkzM0ApODczNmhpOWQzNzo2ODYzOGcpZmY1c15yNG80aGAtLWQtL3NzL2I1Li1fLWBfMjBhMDJjYzpjOg%3D%3D&vl=&vr=";
-        String videoId = "111";
-        String filePath = "d:/data/douyinData/test001/" + DateUtil.today() + "/" + videoId + ".mp4";
+    }
 
-        httpDownload(videoUrl, filePath);*/
-//        downloadVideo(videoUrl);
+    /**
+     * Ta的作品
+     */
+    @Test
+    // 读取文件的json，然后解析到 其中的视频地址，直接下载
+    public void tadezuopinHttp() {
+        // 读取本地文件夹下的json文件，返回视频地址List<String>
+        Map<String, String> videoMap = getTadeVideoMap();
+        videoMap.forEach((id, url) -> {
+            String filePath = "d:/data/douyinData/test001/" + DateUtil.today() + "/" + id + ".mp4";
+            httpDownload(url, filePath);
+        });
+    }
 
+
+    private static Map<String, String> getTadeVideoMap() {
+        Map<String, String> map = new HashMap<>();
+
+        File file = new File(FILE_NAME);
+        BufferedReader reader = null;
+        StringBuffer sbf = new StringBuffer();
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String tempStr;
+            while ((tempStr = reader.readLine()) != null) {
+                sbf.append(tempStr);
+            }
+            reader.close();
+            // 获取到文本
+            String s = sbf.toString();
+
+            // 解析成json
+            JSONObject jsonObject = JSONObject.parseObject(s);
+            JSONArray awemeList = jsonObject.getJSONArray("aweme_list");
+            for (int i = 0; i < awemeList.size(); i++) {
+                // 得到json中有效的videoUrl
+                JSONObject awemeInfo = awemeList.getJSONObject(i);
+                JSONObject video = awemeInfo.getJSONObject("video");
+                JSONObject playAddrLowbr = video.getJSONObject("play_addr_lowbr");
+                JSONArray urlList = playAddrLowbr.getJSONArray("url_list");
+                String videoUrl = (String) urlList.get(1);
+
+                String videoId = i + FILE_NAME_INDEX + "";
+                // 组装list
+                map.put(videoId, videoUrl);
+            }
+            return map;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        return map;
     }
 
     private static Map<String, String> getVideoMap() {
