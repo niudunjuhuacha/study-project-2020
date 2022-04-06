@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author liuqi
@@ -19,23 +20,23 @@ import java.util.Map;
  */
 public class DouyinHttp {
 
-    final static String FILE_NAME = "d:/data/douyinData/test001/douyinJson.txt";
+    final static String FILE_NAME = "/Users/liuqi/Documents/D盘文件/data/douyindata/douyinJson.txt";
+    final static String FIX = "/Users/liuqi/Documents/D盘文件/data/douyindata/";
+    final static String SPLIT = "ZAQ!@WSX";
 
     // todo 名字序号
-    final static Integer FILE_NAME_INDEX = 85;
-
+    final static Integer FILE_NAME_INDEX = 0;
 
     /**
-     * 推荐的作品
+     * 他的喜欢
      */
     @Test
-    // 读取文件的json，然后解析到 其中的视频地址，直接下载
-    public void douyinHttp() {
-        // 读取本地文件夹下的json文件，返回视频地址List<String>
-        Map<String, String> videoMap = getVideoMap();
+    public void favoriteHttp() {
+        Map<Integer, String> videoMap = getFavoriteVideoMap();
         videoMap.forEach((id, url) -> {
-            String filePath = "d:/data/douyinData/test001/" + DateUtil.today() + "/" + id + ".mp4";
+            String filePath = FIX + DateUtil.today() + "/" + id + ".mp4";
             httpDownload(url, filePath);
+//            System.out.println(id + "==" + url);
         });
     }
 
@@ -48,9 +49,84 @@ public class DouyinHttp {
         // 读取本地文件夹下的json文件，返回视频地址List<String>
         Map<String, String> videoMap = getTadeVideoMap();
         videoMap.forEach((id, url) -> {
-            String filePath = "d:/data/douyinData/test001/" + DateUtil.today() + "/" + id + ".mp4";
+            String filePath = FIX + DateUtil.today() + "/" + id + ".mp4";
             httpDownload(url, filePath);
         });
+    }
+    /**
+     * 推荐的作品
+     */
+    @Test
+    // 读取文件的json，然后解析到 其中的视频地址，直接下载
+    public void douyinHttp() {
+        // 读取本地文件夹下的json文件，返回视频地址List<String>
+        Map<String, String> videoMap = getVideoMap();
+        videoMap.forEach((id, url) -> {
+            String filePath = FIX + DateUtil.today() + "/" + id + ".mp4";
+            httpDownload(url, filePath);
+        });
+    }
+
+
+    private Map<Integer, String> getFavoriteVideoMap() {
+        Map<Integer, String> map = new TreeMap<>();
+
+        File file = new File(FILE_NAME);
+        BufferedReader reader = null;
+        StringBuffer sbf = new StringBuffer();
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String tempStr;
+            while ((tempStr = reader.readLine()) != null) {
+                sbf.append(tempStr);
+                sbf.append(SPLIT);
+            }
+            reader.close();
+            // 获取到文本
+            String s = sbf.toString();
+            jsonLinesToMap(map, s);
+
+            return map;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
+
+    }
+
+    /**
+     * 多行json全部放到一个map中
+     *
+     * @param map
+     * @param s
+     */
+    private void jsonLinesToMap(Map<Integer, String> map, String s) {
+
+        // 解析s
+        String[] splitJsonArr = s.split(SPLIT);
+        int videoId = 0;
+        int index = 0;
+        for (String splitJson : splitJsonArr) {
+            // 解析成json
+            JSONObject jsonObject = JSONObject.parseObject(splitJson);
+            JSONArray awemeList = jsonObject.getJSONArray("aweme_list");
+            for (int i = 0; i < awemeList.size(); i++) {
+                // 得到json中有效的videoUrl
+                JSONObject awemeInfo = awemeList.getJSONObject(i);
+                JSONObject video = awemeInfo.getJSONObject("video");
+                JSONObject playAddrLowbr = video.getJSONObject("play_addr");
+                JSONArray urlList = playAddrLowbr.getJSONArray("url_list");
+                String videoUrl = (String) urlList.get(1);
+
+                videoId = i + FILE_NAME_INDEX + index;
+                // 组装list
+                map.put(videoId, videoUrl);
+                if (i == awemeList.size() - 1) {
+                    index = videoId+1;
+                }
+            }
+        }
     }
 
 
@@ -77,7 +153,7 @@ public class DouyinHttp {
                 // 得到json中有效的videoUrl
                 JSONObject awemeInfo = awemeList.getJSONObject(i);
                 JSONObject video = awemeInfo.getJSONObject("video");
-                JSONObject playAddrLowbr = video.getJSONObject("play_addr_lowbr");
+                JSONObject playAddrLowbr = video.getJSONObject("play_addr");
                 JSONArray urlList = playAddrLowbr.getJSONArray("url_list");
                 String videoUrl = (String) urlList.get(1);
 
@@ -85,6 +161,8 @@ public class DouyinHttp {
                 // 组装list
                 map.put(videoId, videoUrl);
             }
+
+
             return map;
 
         } catch (IOException e) {
