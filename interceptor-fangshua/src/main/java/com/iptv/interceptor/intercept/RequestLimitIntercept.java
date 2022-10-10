@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -26,11 +27,14 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RequestLimitIntercept extends HandlerInterceptorAdapter {
 
+
+
     @Autowired
     private StringRedisTemplate redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         /**
          * isAssignableFrom() 判定此 Class 对象所表示的类或接口与指定的 Class 参数所表示的类或接口是否相同，或是否是其超类或超接口
          * isAssignableFrom()方法是判断是否为某个类的父类
